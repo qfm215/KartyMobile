@@ -2,7 +2,7 @@
 
 *	**Clone and install packages**
 ```
-git clone git@github.com:jacquat/KartyMobile.git
+git clone git@github.com:qfm215/KartyMobile.git
 cd KartyMobile
 yarn
 ```
