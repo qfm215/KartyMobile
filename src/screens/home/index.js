@@ -6,7 +6,7 @@ import styles from "./styles.js";
 
 const launchScreenLogo = require("../../../assets/logo_karty.png");
 
-const ip = "192.168.43.187";
+const ip = "192.168.1.17";
 
 export default class Home extends Component {
 
@@ -72,8 +72,8 @@ export default class Home extends Component {
                 <Content>
                     <KeyboardAvoidingView>
                         <Card style={styles.formCard}>
-                            <CardItem header>
-                                <H1 style={{ flex: 1 }}>Sign in</H1>
+                            <CardItem style={{justifyContent: "center", alignItems: "center"}} header>
+                                <H1>Sign in</H1>
                             </CardItem>
                             <CardItem>
                                 <Body>
