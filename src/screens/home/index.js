@@ -1,15 +1,14 @@
 import React, { Component } from "react";
-import { ImageBackground, View, StatusBar } from "react-native";
+import { KeyboardAvoidingView, Image, ImageBackground, View, StatusBar } from "react-native";
 import { Container, Button, H1, Text, Right, Input, Item, Label, Content, Title, Header, Icon, Left, Body, Card, CardItem } from "native-base";
 
-import styles from "./styles";
+import styles from "./styles.js";
 
-const launchscreenBg = require("../../../assets/launchscreen-bg.png");
-const launchscreenLogo = require("../../../assets/logo_karty.png");
+const launchScreenLogo = require("../../../assets/logo_karty.png");
 
 const ip = "192.168.43.187";
 
-class Home extends Component {
+export default class Home extends Component {
 
   state = {
     username: "",
@@ -64,49 +63,49 @@ class Home extends Component {
 
   render() {
     return (
-      <Container>
-        <StatusBar barStyle="light-content" />
-        <ImageBackground source={launchscreenBg} style={{flex: 1, width: null, height: null}}>
-          <View style={{flex: 1, marginTop: 10, justifyContent: "center", alignItems: "center"}}>
-            <ImageBackground source={launchscreenLogo} style={{width: 290, height: 130}} />
-          </View>
-          <Content>
-            <Card style={{ marginLeft: 20, marginRight: 20 }}>
-              <CardItem header>
-                <H1 style={{marginLeft: 125}}>Sign in</H1>
-              </CardItem>
-              <CardItem>
-                <Body>
-                  <Item fixedLabel>
-                    <Label>Username</Label>
-                    <Input ref={component => this._username = component}
-                              onChangeText={(username) => this.setState({username})} />
-                  </Item>
-                  <Item fixedLabel last>
-                    <Label>Password</Label>
-                    <Input secureTextEntry
-                           ref={component => this._password = component}
-                           onChangeText={(password) => this.setState({password})} />
-                  </Item>
-                  <Button block onPress={this._userLogin} style={{ margin: 15, marginTop: 20, backgroundColor: "red" }}>
-                    <Text>Login</Text>
-                  </Button>
-                </Body>
-              </CardItem>
-              <CardItem style={{marginTop: -10}}>
-                <Left>
-                  <Text style={{color: "blue", textDecorationLine: "underline"}}> register </Text>
-                </Left>
-                <Right style={{flex: 1, marginRight: 10,}}>
-                  <Text style={{color: "blue", textDecorationLine: "underline"}}> forgot your password ?</Text>
-                </Right>
-              </CardItem>
-            </Card>
-          </Content>
-        </ImageBackground>
-      </Container>
+        <Container>
+            <StatusBar barStyle="light-content" />
+            <View style={styles.flexContainer}>
+                <View style={styles.logoContainer}>
+                    <Image style={styles.logo} source={launchScreenLogo}/>
+                </View>
+                <Content>
+                    <KeyboardAvoidingView>
+                        <Card style={styles.formCard}>
+                            <CardItem header>
+                                <H1 style={{ flex: 1 }}>Sign in</H1>
+                            </CardItem>
+                            <CardItem>
+                                <Body>
+                                    <Item fixedLabel>
+                                        <Input ref={component => this._username = component}
+                                        onChangeText={(username) => this.setState({username})}
+                                        placeholder="Username"/>
+                                    </Item>
+                                    <Item fixedLabel last>
+                                        <Input secureTextEntry
+                                        ref={component => this._password = component}
+                                        onChangeText={(password) => this.setState({password})}
+                                        placeholder="Password"/>
+                                    </Item>
+                                    <Button block onPress={this._userLogin} style={styles.actionButton}>
+                                    <Text>Login</Text>
+                                    </Button>
+                                </Body>
+                            </CardItem>
+                            <CardItem>
+                                <Left>
+                                  <Text style={styles.actionText}>Register</Text>
+                                </Left>
+                                <Right>
+                                  <Text style={styles.actionText}>Forgot password</Text>
+                                </Right>
+                          </CardItem>
+                        </Card>
+                    </KeyboardAvoidingView>
+                </Content>
+            </View>
+        </Container>
     );
   }
 }
-
-export default Home;
