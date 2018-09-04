@@ -1,12 +1,12 @@
 import React, { Component } from "react";
-import { KeyboardAvoidingView, Image, ImageBackground, View, StatusBar } from "react-native";
+import { KeyboardAvoidingView, Image, ImageBackground, View, StatusBar, Alert } from "react-native";
 import { Container, Button, H1, Text, Right, Input, Item, Label, Content, Title, Header, Icon, Left, Body, Card, CardItem } from "native-base";
 
 import styles from "./styles.js";
 
 const launchScreenLogo = require("../../../assets/logo_karty.png");
 
-const ip = "192.168.1.17";
+const ip = "192.168.43.7";
 
 export default class Home extends Component {
 
@@ -24,10 +24,6 @@ export default class Home extends Component {
     {
       navigate("ShoppingList", {token: values["token"]});
     }
-    else
-    {
-      return 1;
-    }
   }
   
   GetToken(mail, password, callback)
@@ -41,14 +37,24 @@ export default class Home extends Component {
       xmlHttp.onreadystatechange = function() {
           if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
               callback(xmlHttp.responseText, navigate);
+          if (xmlHttp.status != 200)
+          {
+            Alert.alert(
+                     'Login Error',
+                     'Invalid credentials.',
+                     [
+                       {text: 'OK', onPress: () => console.log('Login Error Invalid Credentials: OK pressed.')},
+                     ],
+                     { cancelable: false }
+                   )
+          }
       }
       xmlHttp.send(params);
   }
 
   _userLogin = () => {
     this.clearPassword();
-    this.GetToken("riadmegh@gmail.com", "bonjour", this.handleToken);
-//    this.GetToken(this.state.username, this.state.password, this.handleToken);
+    this.GetToken(this.state.username, this.state.password, this.handleToken);
 };
 
   clearUsername = () => {
