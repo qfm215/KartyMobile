@@ -57,6 +57,11 @@ export default class Home extends Component {
     this.GetToken(this.state.username, this.state.password, this.handleToken);
 };
 
+  _register = () => {
+      const {navigate} = this.props.navigation;
+      navigate("register");
+};
+
   clearUsername = () => {
     this._username.setNativeProps({ text: "" });
     this.setState({ message: "" });
@@ -101,10 +106,14 @@ export default class Home extends Component {
                             </CardItem>
                             <CardItem>
                                 <Left>
+                                  <Button onPress={this._register} style={styles.secondaryButton}>
                                   <Text style={styles.actionText}>Register</Text>
+                                  </Button>
                                 </Left>
                                 <Right>
-                                  <Text style={styles.actionText}>Forgot password</Text>
+                                  <Button onPress={this._forgot} style={styles.secondaryButton}>
+                                  <Text style={styles.actionText}>Forgot !</Text>
+                                  </Button>
                                 </Right>
                           </CardItem>
                         </Card>

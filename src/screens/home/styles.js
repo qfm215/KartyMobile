@@ -9,6 +9,11 @@ export default StyleSheet.create({
     margin: 15,
     marginTop: 20,
   },
+  secondaryButton: {
+    backgroundColor: "grey",
+    margin: 15,
+    marginTop: 20,
+  },
   formCard: {
     marginLeft: 20,
     marginRight: 20,
