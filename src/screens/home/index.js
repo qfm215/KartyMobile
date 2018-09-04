@@ -58,8 +58,9 @@ export default class Home extends Component {
 };
 
   _register = () => {
+      console.log('register clicked');
       const {navigate} = this.props.navigation;
-      navigate("register");
+      navigate("Register");
 };
 
   clearUsername = () => {
