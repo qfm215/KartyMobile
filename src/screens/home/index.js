@@ -92,59 +92,61 @@ export default class Home extends Component {
         return (
             <Container>
                 <Grid style={{backgroundColor: "red"}}>
-                    <Row size={1}></Row>
-                    <Row size={4}>
-                        <Grid>
-                            <Col size={1}></Col>
-                            <Col size={6}>
-                                <View style={styles.logoContainer}>
-                                    <Image style={styles.logo} source={launchScreenLogo}/>
-                                </View>
-                            </Col>
-                            <Col size={1}></Col>
-                        </Grid>
+                    <Row size={2}></Row>
+                    <Row size={6}>
+                        <Col size={1}></Col>
+                        <Col size={6}>
+                            <View style={styles.logoContainer}>
+                                <Image style={styles.logo} source={launchScreenLogo}/>
+                            </View>
+                        </Col>
+                        <Col size={1}></Col>
                     </Row>
                     <Row size={1}></Row>
-                    <Row size={10}>
-                        <Content>
-                            <KeyboardAvoidingView>
-                                <Card style={styles.formCard}>
-                                    <CardItem style={{justifyContent: "center", alignItems: "center"}} header>
-                                        <H1>Sign in</H1>
-                                    </CardItem>
-                                    <CardItem>
-                                        <Body>
-                                        <Item fixedLabel>
-                                            <Input ref={component => this._username = component}
-                                                   onChangeText={(username) => this.setState({username})}
-                                                   placeholder="Username"/>
-                                        </Item>
-                                        <Item fixedLabel last>
-                                            <Input secureTextEntry
-                                                   ref={component => this._password = component}
-                                                   onChangeText={(password) => this.setState({password})}
-                                                   placeholder="Password"/>
-                                        </Item>
-                                        <Button block onPress={this._userLogin} style={styles.actionButton}>
-                                            <Text>Login</Text>
-                                        </Button>
-                                        </Body>
-                                    </CardItem>
-                                    <CardItem>
-                                        <Left>
-                                            <Button onPress={this._register} style={styles.secondaryButton}>
-                                                <Text style={styles.actionText}>Register</Text>
+                    <Row size={20}>
+                        <Col size={1}></Col>
+                        <Col size={10}>
+                            <Content>
+                                <KeyboardAvoidingView>
+                                    <Card style={styles.formCard}>
+                                        <CardItem style={{justifyContent: "center", alignItems: "center"}} header>
+                                            <H1>Sign in</H1>
+                                        </CardItem>
+                                        <CardItem>
+                                            <Body>
+                                            <Item fixedLabel>
+                                                <Input ref={component => this._username = component}
+                                                       onChangeText={(username) => this.setState({username})}
+                                                       placeholder="Username"/>
+                                            </Item>
+                                            <Item fixedLabel last>
+                                                <Input secureTextEntry
+                                                       ref={component => this._password = component}
+                                                       onChangeText={(password) => this.setState({password})}
+                                                       placeholder="Password"/>
+                                            </Item>
+                                            <Button block onPress={this._userLogin} style={styles.actionButton}>
+                                                <Text>Login</Text>
                                             </Button>
-                                        </Left>
-                                        <Right>
-                                            <Button onPress={this._forgot} style={styles.secondaryButton}>
-                                                <Text style={styles.actionText}>Forgot !</Text>
-                                            </Button>
-                                        </Right>
-                                    </CardItem>
-                                </Card>
-                            </KeyboardAvoidingView>
-                        </Content>
+                                            </Body>
+                                        </CardItem>
+                                        <CardItem>
+                                            <Left>
+                                                <Button onPress={this._register} style={styles.secondaryButton}>
+                                                    <Text style={styles.actionText}>Register</Text>
+                                                </Button>
+                                            </Left>
+                                            <Right>
+                                                <Button onPress={this._forgot} style={styles.secondaryButton}>
+                                                    <Text style={styles.actionText}>Forgot !</Text>
+                                                </Button>
+                                            </Right>
+                                        </CardItem>
+                                    </Card>
+                                </KeyboardAvoidingView>
+                            </Content>
+                        </Col>
+                        <Col size={1}></Col>
                     </Row>
                     <Row size={1}></Row>
                 </Grid>
