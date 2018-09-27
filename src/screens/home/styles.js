@@ -13,8 +13,4 @@ export default StyleSheet.create({
         borderWidth: 1,
         backgroundColor: "white",
     },
-    logo: {
-        width: 290,
-        height: 130,
-    },
 });

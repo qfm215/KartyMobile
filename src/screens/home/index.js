@@ -94,10 +94,10 @@ export default class Home extends Component {
                 <Row size={2}></Row>
                 <Row size={6}>
                     <Col size={1}></Col>
-                    <Col size={6}>
-                        <View style={styles.logoContainer}>
-                            <Image style={styles.logo} source={launchScreenLogo}/>
-                        </View>
+                    <Col size={4}>
+                        <Image style={styles.logo} source={launchScreenLogo}
+                               resizeMode="contain"
+                               style={{flex: 1, height: undefined, width: undefined}}/>
                     </Col>
                     <Col size={1}></Col>
                 </Row>
