@@ -6,13 +6,12 @@ export default StyleSheet.create({
     },
     actionButton: {
         backgroundColor: "red",
-        margin: 15,
-        marginTop: 20,
+        marginTop: 10,
     },
     secondaryButton: {
-        backgroundColor: "grey",
-        margin: 15,
-        marginTop: 20,
+        borderColor: "grey",
+        borderWidth: 1,
+        backgroundColor: "white",
     },
     logo: {
         width: 290,
