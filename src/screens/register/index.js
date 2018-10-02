@@ -45,17 +45,18 @@ export default class Register extends Component {
       })
     }).then((response) => response.json())
       .then((responseJSON) => {
-        if (responseJSON.statusCode === 200)
-          this.popUp("Registration successful !", "Check your emails to validate.", "OK");
+        console.log(responseJSON);
+        if (responseJSON.opcode == 200)
+          Register.popUp("Registration successful !", "Check your emails to validate.", "OK");
         else {
-          this.popUp("Registration error", responseJSON.message + ": " + responseJSON.field, "Try again");
+          Register.popUp("Registration error", responseJSON.message + ": " + responseJSON.field, "Try again");
         }
       }).catch((error) => {
       console.log(error);
     });
   }
 
-  popUp(title, text, buttonText) {
+  static popUp(title, text, buttonText) {
     Alert.alert(
       title,
       text,
