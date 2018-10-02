@@ -24,7 +24,7 @@ import {Col, Grid, Row} from "react-native-easy-grid";
 
 const launchScreenLogo = require("../../../assets/logo_karty.png");
 
-const ip = "192.168.43.7";
+const ip = "10.149.5.232";
 
 export default class Home extends Component {
 
@@ -63,7 +63,7 @@ export default class Home extends Component {
                     {cancelable: false}
                 )
             }
-        }
+        };
         xmlHttp.send(params);
     }
 
