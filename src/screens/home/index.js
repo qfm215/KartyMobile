@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import { ImageBackground, View, StatusBar } from "react-native";
-import { Container, Button, H1, Text, Right, Input, Item, Label, Content, Title, Header, Icon, Left, Body, Card, CardItem } from "native-base";
+import { Container, Button, H1, Text, Right, Input, Item, Label, Content, Title, Header, Icon, Left, Body, Card, CardItem, Image } from "native-base";
 
 import styles from "./styles";
 
 const launchscreenBg = require("../../../assets/launchscreen-bg.png");
 const launchscreenLogo = require("../../../assets/logo_karty.png");
 
-const ip = "192.168.43.187";
+global.ip = "192.168.137.155";
 
 class Home extends Component {
 
@@ -16,40 +16,97 @@ class Home extends Component {
     password: "",
     isLoggingIn: false,
     token: "",
-    message: ""
+    message: "",
+    data: "",
   };
   
-  handleToken(response, navigate) {
-    values = JSON.parse(response);
-    if (values["opcode"] == 200 && values["message"] == "OK")
+  setlist(response, i)
+  {
+    if (this.state.data != "")
+      this.state.data += "--";
+    this.state.data += JSON.stringify(response);
+    if (i == 1)
     {
-      navigate("ShoppingList", {token: values["token"]});
-    }
-    else
-    {
-      return 1;
+      const {navigate} = this.props.navigation;
+      navigate("ShoppingList", {token: this.state.token, list: this.state.data});
     }
   }
-  
-  GetToken(mail, password, callback)
+
+  getlist(list)
   {
-      const {navigate} = this.props.navigation;
-      var theUrl = "http://" + ip + ":3000/api/v1/auth/authenticate";
-      var xmlHttp = new XMLHttpRequest();
-      var params = "mail=" + mail + "&password=" + password;
-      xmlHttp.open( "POST", theUrl, true ); // false for synchronous request
-      xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
-      xmlHttp.onreadystatechange = function() {
-          if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-              callback(xmlHttp.responseText, navigate);
+      var request = async () => {
+        var theUrl = "http://" + global.ip + ":3000/api/v1/list?id="
+        for (var i = 0; i < list.length; i++)
+        {
+          var response = await fetch(theUrl + list[i], {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+              'token': this.state.token,
+            },
+          });
+          var json = await response.json();
+          if (json.opcode == 200 && json.message == "OK")  
+            this.setlist(json, list.length - i);
+        }
+      }      
+      request();
+  }
+
+  GetListUser()
+  {
+    var theUrl = "http://" + global.ip + ":3000/api/v1/list/user";
+    var request = async () => {
+      var response = await fetch(theUrl, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'token': this.state.token,
+        },
+      });
+      var json = await response.json();
+      if (json.opcode == 200)
+      {
+        var list = json.list.toString().split(",");
+        this.getlist(list);
       }
-      xmlHttp.send(params);
+    }
+  
+    request();
+  }
+  
+  GetToken(mail, password)
+  {
+      var theUrl = "http://" + global.ip + ":3000/api/v1/auth/authenticate";
+      var params = "mail=" + mail + "&password=" + password;
+      var request = async () => {
+        var response = await fetch(theUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: params
+        });
+        var json = await response.json();
+        if (json.opcode == 200 && json.message == "OK")
+        {
+          this.state.token = json.token;
+          this.state.isLoggingIn = true;
+          this.GetListUser();
+        }
+        else
+        {
+          alert(json.message);
+        }
+      }
+    
+      request();
   }
 
   _userLogin = () => {
+    //this.GetToken("riadmegh@gmail.com", "aze");
+    this.GetToken(this.state.username, this.state.password);
     this.clearPassword();
-    this.GetToken("riadmegh@gmail.com", "bonjour", this.handleToken);
-//    this.GetToken(this.state.username, this.state.password, this.handleToken);
 };
 
   clearUsername = () => {
@@ -63,6 +120,7 @@ class Home extends Component {
   };
 
   render() {
+    const {navigate} = this.props.navigation;
     return (
       <Container>
         <StatusBar barStyle="light-content" />
@@ -80,7 +138,7 @@ class Home extends Component {
                   <Item fixedLabel>
                     <Label>Username</Label>
                     <Input ref={component => this._username = component}
-                              onChangeText={(username) => this.setState({username})} />
+                            onChangeText={(username) => this.setState({username})} />
                   </Item>
                   <Item fixedLabel last>
                     <Label>Password</Label>
@@ -95,7 +153,7 @@ class Home extends Component {
               </CardItem>
               <CardItem style={{marginTop: -10}}>
                 <Left>
-                  <Text style={{color: "blue", textDecorationLine: "underline"}}> register </Text>
+                  <Text onPress={() => navigate("Submit")} style={{color: "blue", textDecorationLine: "underline"}}> register </Text>
                 </Left>
                 <Right style={{flex: 1, marginRight: 10,}}>
                   <Text style={{color: "blue", textDecorationLine: "underline"}}> forgot your password ?</Text>

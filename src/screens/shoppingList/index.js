@@ -2,25 +2,17 @@ import React, { Component } from "react";
 import { Text, Container, Header, Left, Button, Icon, Body, Right, Content, Title, ListItem, Badge, IconNB, Input, Item, View, SwipeRow, List} from "native-base";
 import { ListView } from "react-native";
 
-const ip = "192.168.43.187";
-
-const datas = [
-  {name: "Food Shopping List", price: 32.50 },
-  {name: "Birthday List", price: 47.10 },
-  {name: "Buy condoms", price: 12.99 },
-  {name: "BBQ Shopping List", price: 73.23 },
-  {name: "Bedroom decoration", price: 399.99 },
-  {name: "Party", price: 51.18 },
-];
-
+let datas = null;
 
 class ShoppingList extends Component {
   constructor(props) {
     super(props);
     this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.state = {
+      token: null,
+      data: "",
       basic: true,
-      listViewData: datas
+      listViewData: []
     };
   }
 
@@ -31,68 +23,76 @@ class ShoppingList extends Component {
     this.setState({ listViewData: newData });
   }
 
-  setlist(response, mycl)
+  setproduct(response, listName, i)
   {
-      values = JSON.parse(response);
-      if (values["opcode"] == 200 && values["message"] == "OK")
-      {
-          datas += values;
-      }
-      else
-          return 1;
-  }
-
-  GetList(token, id, callback)
-  {
-    var theUrl = "http://" + ip + ":3000/api/v1/list?id=" + id;
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "GET", theUrl, true ); // false for synchronous request
-    xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
-    xmlHttp.setRequestHeader("token", token);
-    xmlHttp.onreadystatechange = function() {
-        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-            callback(xmlHttp.responseText, mycl);
+    if (this.state.data != "")
+      this.state.data += "--";
+    this.state.data += JSON.stringify(response);
+    if (i == 1)
+    {
+      const {navigate} = this.props.navigation;
+      navigate("ShoppingListShow", {token: this.state.token, listName: listName, products: this.state.data});
     }
-    xmlHttp.send( null );
   }
-
-  getlist(token, response, mycl)
+  
+  GetProduct(prods, listName)
   {
-      values = JSON.parse(response);
-      if (values["opcode"] == 200)
+    var theUrl = "http://" + global.ip + ":3000/api/v1/product?id=";
+    var request = async () => {
+      for (var i = 0; i < prods.length; i++)
       {
-        list = values["list"].split(";");
-        for (var i = 0; i < list.length; i++)
-          {
-            mycl.GetList(token, list[i], mycl.setlist, mycl);
-          }
+        var response = await fetch(theUrl + prods[i], {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'token': this.state.token,
+          },
+        });
+        var json = await response.json();
+        if (json.opcode == 200 && json.message == "OK")
+        {
+//          alert(JSON.stringify(json))
+          this.setproduct(json, listName, prods.length - i);
+        }
       }
-      else
-          return 1;
+    }
+  
+    request();
   }
 
-  GetListUser(token, callback)
+  getListProduct(data)
   {
-    mycl = this;
-    var theUrl = "http://" + ip + ":3000/api/v1/list/user";
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "GET", theUrl, true ); // false for synchronous request
-    xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
-    xmlHttp.setRequestHeader("token", token);
-    xmlHttp.onreadystatechange = function() { 
-        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-            callback(token, xmlHttp.responseText, mycl);
+    this.state.data = [];
+//    this.props.navigation.navigate("ShoppingListShow", {name: data.name, products: data.products});
+    if (this.state.token != "")
+    {
+        var prods = data.products.toString().split(",");
+        this.GetProduct(prods, data.name);
     }
-    xmlHttp.send( null );
+  }
+
+  addList()
+  {
+    const {navigate} = this.props.navigation;
+    navigate("AddList", {token: this.state.token});
   }
 
   render() {
     const { navigation } = this.props;
-    token = navigation.getParam('token', 'NO-TOKEN');
-    this.GetListUser(token, this.getlist);
+    this.state.token = navigation.getParam('token', 'NO-TOKEN');
+    if (datas == null)
+    {
+      datas = [];
+      var list = navigation.getParam('list', 'NO-LIST').split("--");
+      for (i = 0; i < list.length; ++i)
+      {
+        datas.push(JSON.parse(list[i]));
+      }
+      this.state.listViewData = datas;
+    }
+//    this.GetListUser(token, this.getlist);
     return (
-      <Container style={{backgroundColor: "#FFF"}}
->
+      <Container style={{backgroundColor: "#FFF"}}>
         <Header searchBar rounded style={{backgroundColor: "red"}}>
           <Left>
             <Button
@@ -103,7 +103,7 @@ class ShoppingList extends Component {
             </Button>
           </Left>
           <Body>
-          <Title>ShoppingList</Title>
+          <Title>ShoppingLists</Title>
           </Body>
           <Right>
             <Item>
@@ -115,26 +115,26 @@ class ShoppingList extends Component {
 
         <Content >
           <ListItem itemDivider>
-            <Text>Simply Market</Text>
+            <Text>Auchan</Text>
           </ListItem>
           <List style={{marginLeft: 20}}
             dataSource={this.ds.cloneWithRows(this.state.listViewData)}
             renderRow={data =>
-              <ListItem thumbnail onPress={() => this.props.navigation.navigate("ShoppingListShow", {token: token, name: data.name, products: data.products})} >
+              <ListItem thumbnail onPress={() => this.getListProduct(data)} >
                 <Left>
                   <Text> {data.name} </Text>
                 </Left>
                 <Body/>
                 <Right>
-                  <Badge success>
-                    <Text> {data.price} $</Text>
+                  <Badge style={{backgroundColor: "grey"}}>
+                    <Text>{data.total}</Text>
                   </Badge>
                 </Right>
             </ListItem>}
             renderLeftHiddenRow={data =>
               <Button
                 full
-                onPress={() => this.props.navigation.navigate("ShoppingListShow", {token: token, name: data.name, products: data.products})}
+                onPress={() => this.getListProduct(data)}
                 style={{
                   backgroundColor: "#CCC",
                   flex: 1,
@@ -161,7 +161,7 @@ class ShoppingList extends Component {
             rightOpenValue={-75}
           />
         </Content>
-        <Button rounded style={{ backgroundColor: "#DD5144", position: "absolute", bottom: 0, right: 0, margin: 20}}>
+        <Button onPress={_ => this.addList()} rounded style={{ backgroundColor: "#DD5144", position: "absolute", bottom: 0, right: 0, margin: 20}}>
           <IconNB name="md-add" />
         </Button>
       </Container>
