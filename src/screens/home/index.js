@@ -1,18 +1,13 @@
 import React, {Component} from "react";
 import {KeyboardAvoidingView, Image, ImageBackground, View, StatusBar, Alert} from "react-native";
 import {
-    Container,
     Button,
     H1,
     Text,
     Right,
     Input,
     Item,
-    Label,
     Content,
-    Title,
-    Header,
-    Icon,
     Left,
     Body,
     Card,
@@ -76,11 +71,6 @@ export default class Home extends Component {
         console.log('register clicked');
         const {navigate} = this.props.navigation;
         navigate("Register");
-    };
-
-    clearUsername = () => {
-        this._username.setNativeProps({text: ""});
-        this.setState({message: ""});
     };
 
     clearPassword = () => {
