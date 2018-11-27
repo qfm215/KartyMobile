@@ -1,13 +1,12 @@
 import React, { Component } from "react";
-import { Alert, KeyboardAvoidingView, ScrollView, View } from "react-native";
+import { Alert, KeyboardAvoidingView, ScrollView } from "react-native";
 
 import { FormLabel, FormInput, Text, Button } from "react-native-elements";
 
 const apiAddress = "10.149.5.232";
 const apiPort = "3000";
 
-const createUserUrl = "http://" + apiAddress + ":" + apiPort + "\/api\/v1\/users\/";
-
+const createUserUrl = "http://" + apiAddress + ":" + apiPort + "/api/v1/users/";
 
 export default class Register extends Component {
   constructor(props) {
