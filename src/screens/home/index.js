@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import PropTypes from 'prop-types';
+
 import { KeyboardAvoidingView, Image, Alert } from "react-native";
 import {
   Button,
@@ -23,24 +23,19 @@ const launchScreenLogo = require("../../../assets/logo_karty.png");
 const ip = "10.149.5.232";
 
 export default class Home extends Component {
-  static get propTypes() {
-    return {
-      navigation: PropTypes.any,
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      username: "paul.belloc@protonmail.com",
+      password: "test"
     };
   }
-
-  state = {
-    username: "",
-    password: "",
-    isLoggingIn: false,
-    token: "",
-    message: ""
-  };
 
   handleToken(response, navigate) {
     const values = JSON.parse(response);
     if (values["opcode"] == 200 && values["message"] == "OK") {
-      navigate("ShoppingList", { token: values["token"] });
+      navigate("UserInfo", { token: values["token"] });
     }
   }
 
@@ -51,6 +46,7 @@ export default class Home extends Component {
     var params = "mail=" + mail + "&password=" + password;
     xmlHttp.open("POST", theUrl, true); // false for synchronous request
     xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
     xmlHttp.onreadystatechange = function() {
       if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
         callback(xmlHttp.responseText, navigate);
@@ -65,11 +61,11 @@ export default class Home extends Component {
         );
       }
     };
+
     xmlHttp.send(params);
   }
 
   _userLogin = () => {
-    this.clearPassword();
     this.GetToken(this.state.username, this.state.password, this.handleToken);
   };
 
@@ -77,11 +73,6 @@ export default class Home extends Component {
     console.log("register clicked");
     const { navigate } = this.props.navigation;
     navigate("Register");
-  };
-
-  clearPassword = () => {
-    this._password.setNativeProps({ text: "" });
-    this.setState({ message: "" });
   };
 
   render() {
@@ -110,15 +101,18 @@ export default class Home extends Component {
                   <CardItem>
                     <Body>
                     <Item fixedLabel>
-                      <Input ref={component => this._username = component}
-                             onChangeText={(username) => this.setState({ username })}
-                             placeholder="Username"/>
+                      <Input
+                        ref={component => this._username = component}
+                        onChangeText={(username) => this.setState({ username })}
+                        placeholder="Username" spellCheck={false}
+                        autoCorrect={false}/>
                     </Item>
                     <Item fixedLabel last>
-                      <Input secureTextEntry
-                             ref={component => this._password = component}
-                             onChangeText={(password) => this.setState({ password })}
-                             placeholder="Password"/>
+                      <Input
+                        secureTextEntry
+                        ref={component => this._password = component}
+                        onChangeText={(password) => this.setState({ password })}
+                        placeholder="Password"/>
                     </Item>
                     <Button block onPress={this._userLogin} style={styles.actionButton}>
                       <Text>Login</Text>

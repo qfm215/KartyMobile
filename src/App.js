@@ -1,12 +1,13 @@
 import React from "react";
 import { Root } from "native-base";
-import { StackNavigator, DrawerNavigator } from "react-navigation";
+import { StackNavigator } from "react-navigation";
 
 
 import Home from "./screens/home/";
 import Register from "./screens/register/";
 import ShoppingList from "./screens/shoppingList/";
 import ShoppingListShow from "./screens/shoppingList/show";
+import UserInfo from './screens/userInfo/'
 
 const AppNavigator = StackNavigator(
   {
@@ -15,6 +16,7 @@ const AppNavigator = StackNavigator(
     ShoppingList: { screen: ShoppingList },
     ShoppingListShow: { screen: ShoppingListShow },
     Register: { screen: Register },
+    UserInfo: {screen: UserInfo}
   },
   {
     initialRouteName: "Home",

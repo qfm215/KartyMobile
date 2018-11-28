@@ -2,7 +2,7 @@
   "parser": "babel-eslint",
   "env": {
     "browser": true,
-    "amd": true,
+    "amd": true
   },
   "plugins": [
     "react"
@@ -12,6 +12,14 @@
     "plugin:react/recommended"
   ],
   "rules": {
-    "no-console": "off"
+    "no-console": "off",
+    "react/prop-types": [
+      "error",
+      {
+        "ignore": [
+          "navigation"
+        ]
+      }
+    ]
   }
 }
