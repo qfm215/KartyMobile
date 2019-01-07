@@ -126,7 +126,7 @@ export default class Home extends Component {
                       </Button>
                     </Left>
                     <Right>
-                      <Button onPress={this._forgot} style={styles.secondaryButton}>
+                      <Button onPress={this._register} style={styles.secondaryButton}>
                         <Text style={styles.actionText}>Forgot !</Text>
                       </Button>
                     </Right>

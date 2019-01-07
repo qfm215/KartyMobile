@@ -149,24 +149,6 @@ export default class UserInfo extends Component {
             returnKeyType="next"
           />
 
-          {/*<FormLabel>Password</FormLabel>*/}
-          {/*<FormInput*/}
-            {/*value={password}*/}
-            {/*onChangeText={password => this.setState({ password })}*/}
-            {/*placeholder="Password"*/}
-            {/*returnKeyType="next"*/}
-            {/*secureTextEntry*/}
-          {/*/>*/}
-
-          {/*<FormLabel>Confirm Password</FormLabel>*/}
-          {/*<FormInput*/}
-            {/*value={confirmPassword}*/}
-            {/*onChangeText={confirmPassword => this.setState({ confirmPassword })}*/}
-            {/*placeholder="Confirm Password"*/}
-            {/*returnKeyType="next"*/}
-            {/*secureTextEntry*/}
-          {/*/>*/}
-
           <FormLabel>Country</FormLabel>
           <FormInput
             value={country}
