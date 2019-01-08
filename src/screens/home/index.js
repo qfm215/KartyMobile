@@ -27,15 +27,15 @@ export default class Home extends Component {
     super(props);
 
     this.state = {
-      username: "paul.belloc@protonmail.com",
+      username: "paul@belloc.ovh",
       password: "test"
     };
   }
 
-  handleToken(response, navigate) {
+  handleToken(response, navigate, mail) {
     const values = JSON.parse(response);
     if (values["opcode"] == 200 && values["message"] == "OK") {
-      navigate("UserInfo", { token: values["token"] });
+      navigate("MainMenu", { token: values["token"], username: mail });
     }
   }
 
@@ -49,7 +49,7 @@ export default class Home extends Component {
 
     xmlHttp.onreadystatechange = function() {
       if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-        callback(xmlHttp.responseText, navigate);
+        callback(xmlHttp.responseText, navigate, mail);
       if (xmlHttp.readyState == 4 && xmlHttp.status != 200) {
         Alert.alert(
           "Login Error",
@@ -70,7 +70,6 @@ export default class Home extends Component {
   };
 
   _register = () => {
-    console.log("register clicked");
     const { navigate } = this.props.navigation;
     navigate("Register");
   };
@@ -102,6 +101,7 @@ export default class Home extends Component {
                     <Body>
                     <Item fixedLabel>
                       <Input
+                        defaultValue="paul@belloc.ovh"
                         ref={component => this._username = component}
                         onChangeText={(username) => this.setState({ username })}
                         placeholder="Username" spellCheck={false}
@@ -109,6 +109,7 @@ export default class Home extends Component {
                     </Item>
                     <Item fixedLabel last>
                       <Input
+                        defaultValue="test"
                         secureTextEntry
                         ref={component => this._password = component}
                         onChangeText={(password) => this.setState({ password })}
