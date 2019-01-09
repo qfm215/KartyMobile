@@ -21,6 +21,10 @@ export default class MainMenu extends Component {
     this.props.navigation.navigate("ShoppingList", { token: this.state.token });
   };
 
+  _userBudgets = () => {
+    this.props.navigation.navigate("UserBudgets", { token: this.state.token });
+  };
+
   render() {
     return (
       <Grid style={{ backgroundColor: "red", alignItems: "center" }}>
@@ -41,6 +45,11 @@ export default class MainMenu extends Component {
             <Row size={2}>
               <Button onPress={this._shoppingList} style={styles.secondaryButton}>
                 <Text style={styles.actionText}>Shopping List</Text>
+              </Button>
+            </Row>
+            <Row size={2}>
+              <Button onPress={this._userBudgets} style={styles.secondaryButton}>
+                <Text style={styles.actionText}>Budgets</Text>
               </Button>
             </Row>
             <Row size={8}></Row>

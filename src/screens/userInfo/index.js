@@ -27,7 +27,6 @@ export default class UserInfo extends Component {
 
     this.getUserInfo(token).then((userInfo) => {
       this.setState(userInfo);
-      console.log('LOG THE STATE IN THEN: ', this.state);
     });
   }
 
