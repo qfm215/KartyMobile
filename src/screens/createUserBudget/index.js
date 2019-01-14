@@ -17,46 +17,45 @@ export default class UserInfo extends Component {
     this.state = {
       token: token,
       name: "",
-      description: ""
+      description: "",
+      total: ""
     };
   }
 
-  static popUp(name, text, buttonText) {
-    Alert.alert(
-      name,
-      text,
-      [
-        { text: buttonText }
-      ],
-      { cancelable: false }
-    );
+  submit() {
+    console.log(this.state);
+    if (this.state.name && this.state.description && this.state.total) {
+      fetch(postUserBudgetURL, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          token: this.state.token
+        },
+        body: JSON.stringify({
+          name: this.state.name,
+          description: this.state.description,
+          total: this.state.total
+        })
+      }).then((response) => response.json())
+        .then((responseJSON) => {
+          console.log(responseJSON);
+          this.props.navigation.getParam("onBack")();
+          this.props.navigation.goBack();
+        }).catch((error) => {
+        console.log(error);
+      });
+    } else {
+      UserInfo.popUp("Error", "All fields must be filled.", "OK");
+    }
   }
 
-  submit() {
-    const { name, description } = this.state;
-
-    fetch(postUserBudgetURL, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        token: this.state.token
-      },
-      body: JSON.stringify({
-        name: name,
-        description: description
-      })
-    }).then((response) => response.json())
-      .then((responseJSON) => {
-        console.log(responseJSON);
-      }).catch((error) => {
-      console.log(error);
-    });
+  onTextChanged(text) {
+    // code to remove non-numeric characters from text
+    this.setState({ total: text.replace(/[^0-9]/g, "") });
   }
 
   render() {
-    const { name, description } = this.state;
-
     return (
       <ScrollView>
         <KeyboardAvoidingView behavior={"padding"} enabled>
@@ -64,24 +63,33 @@ export default class UserInfo extends Component {
 
           <FormLabel>First Name</FormLabel>
           <FormInput
-            value={name}
-            onChangeText={name => this.setState({ name })}
+            value={this.state.name}
+            onChangeText={(name) => this.setState({ name })}
             placeholder="Budget name"
             returnKeyType="next"
           />
 
           <FormLabel>Last Name</FormLabel>
           <FormInput
-            value={description}
-            onChangeText={description => this.setState({ description })}
+            value={this.state.description}
+            onChangeText={(description) => this.setState({ description })}
             placeholder="Budget Description"
             returnKeyType="next"
           />
 
-          <Button
-            onPress={this.submit.bind(this)}
-            name={"Submit"}
+          <FormLabel>Total</FormLabel>
+          <FormInput
+            keyboardType='numeric'
+            onChangeText={(text) => this.onTextChanged(text)}
+            value={this.state.total}
+            placeholder="Budget Total"
+            returnKeyType="next"
+            maxLength={7}
           />
+
+          <Button onPress={this.submit.bind(this)} title="submit">
+            <Text>Submit</Text>
+          </Button>
         </KeyboardAvoidingView>
       </ScrollView>
     );

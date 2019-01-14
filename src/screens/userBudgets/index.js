@@ -17,14 +17,12 @@ export default class UserBudgets extends Component {
       token: this.props.navigation.getParam("token")
     };
 
-    this.getUserBudgets(this.state.token).then((getUserBudgetsResponse) => {
-      this.setState({ budgets: getUserBudgetsResponse["budgets"] });
-    });
+    this.refresh();
   }
 
   _createUserBudget = () => {
-    this.props.navigation.navigate("CreateUserBudget", { token: this.state.token });
-  }
+    this.props.navigation.navigate("CreateUserBudget", { token: this.state.token, onBack: () => this.refresh() });
+  };
 
   getUserBudgets(token) {
     return fetch(getUserBudgetsURL, {
@@ -42,6 +40,12 @@ export default class UserBudgets extends Component {
       });
   }
 
+  refresh() {
+    this.getUserBudgets(this.state.token).then((getUserBudgetsResponse) => {
+      this.setState({ budgets: getUserBudgetsResponse["budgets"] });
+    });
+  }
+
   render() {
     return (
       <Grid style={{ backgroundColor: "red", alignItems: "center" }}>
@@ -54,7 +58,7 @@ export default class UserBudgets extends Component {
           <Col size={1}></Col>
           <Col size={8} style={{ backgroundColor: "white" }}>
             <Button onPress={this._createUserBudget} style={styles.secondaryButton}>
-              <Text style={styles.actionText}>Create a new budget</Text>
+              <Text style={styles.actionText}>Add new budget</Text>
             </Button>
             <FlatList
               style={{ alignSelf: "stretch" }}

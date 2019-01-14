@@ -51,7 +51,12 @@ export default class UserInfo extends Component {
   }
 
   submitInfo() {
-    const { firstName, lastName, country, birthday } = this.state;
+    const { firstName, lastName, country, birthday, mail } = this.state;
+
+    if (!(firstName && lastName && country && birthday && mail)) {
+      UserInfo.popUp("Error", "All fields must be filled.", "OK");
+      return;
+    }
 
     fetch(updateUserInfoURL, {
       method: "PUT",
@@ -70,7 +75,7 @@ export default class UserInfo extends Component {
       .then((responseJSON) => {
         console.log(responseJSON);
         if (responseJSON.opcode == 200)
-          this.submitMail();
+          this.submitMail(mail);
         else {
           UserInfo.popUp("Update informations error", responseJSON.message + ": " + responseJSON.field, "Try again");
         }
@@ -79,9 +84,7 @@ export default class UserInfo extends Component {
     });
   }
 
-  submitMail() {
-    const { mail } = this.state;
-
+  submitMail(mail) {
     fetch(updateUserMailURL, {
       method: "PUT",
       headers: {
@@ -95,8 +98,10 @@ export default class UserInfo extends Component {
     }).then((response) => response.json())
       .then((responseJSON) => {
         console.log(responseJSON);
-        if (responseJSON.opcode == 200)
+        if (responseJSON.opcode == 200) {
           UserInfo.popUp("Update successful !", null, "OK");
+          this.props.navigation.goBack();
+        }
         else {
           UserInfo.popUp("Update mail error", responseJSON.message + ": " + responseJSON.field, "Try again");
         }
