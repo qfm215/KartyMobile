@@ -1,12 +1,9 @@
 import React, { Component } from "react";
-import { Alert, KeyboardAvoidingView, ScrollView } from "react-native";
-
+import { Alert, KeyboardAvoidingView, ScrollView, Picker } from "react-native";
+import DatePicker from 'react-native-datepicker'
 import { FormLabel, FormInput, Text, Button } from "react-native-elements";
 
-const apiAddress = "10.149.5.232";
-const apiPort = "3000";
-
-const createUserUrl = "http://" + apiAddress + ":" + apiPort + "/api/v1/users/";
+const createUserUrl = global.ip + "/api/v1/users/";
 
 export default class Register extends Component {
   constructor(props) {
@@ -19,7 +16,8 @@ export default class Register extends Component {
       password: "",
       confirmPass: "",
       country: "",
-      birthday: ""
+        birthday: "2000-01-01",
+        countries: ["France", "Korea", "England", "USA", "Germany", "Spain", "Japan", "China"],
     };
   }
 
@@ -66,6 +64,17 @@ export default class Register extends Component {
     );
   }
 
+    loadUserTypes() {
+        return this.state.countries.map(country => (
+            <Picker.Item key={country} label={country} value={country} />
+        ))
+    }
+
+    handleDateChange(date) {
+      this.setState({
+        birthdayDate: date
+      });
+    }
   render() {
     const { firstName, lastName, email, password, confirmPassword, country, birthday } = this.state;
     return (
@@ -120,25 +129,43 @@ export default class Register extends Component {
             secureTextEntry
           />
 
-          <FormLabel>Country</FormLabel>
-          <FormInput
-            refInput={input => (this.countryInput = input)}
-            value={country}
-            onChangeText={country => this.setState({ country })}
-            placeholder="Country"
-            returnKeyType="next"
-          />
+        <FormLabel>Country</FormLabel>
+                <Picker
+                    selectedValue={this.state.country}
+                    onValueChange={(itemValue, itemIndex) =>
+                            this.setState({ country: itemValue })}
+                        returnKeyType="next">
 
-          <FormLabel>Birthday (yyyy-mm-dd)</FormLabel>
-          <FormInput
-            refInput={input => (this.birthdayInput = input)}
-            value={birthday}
-            onChangeText={birthday => this.setState({ birthday })}
-            placeholder="Birthday (yyyy-mm-dd)"
-            returnKeyType="go"
-          />
+                    {this.loadUserTypes()}
+                    
+                </Picker>
+        <FormLabel>Birthday</FormLabel>
+        <DatePicker
+            style={{width: 200, left: 10}}
+            date={this.state.birthday}
+            mode="date"
+            placeholder="select date"
+            format="YYYY-MM-DD"
+            minDate="1900-01-01"
+            maxDate="2018-12-31"
+            confirmBtnText="Confirm"
+            cancelBtnText="Cancel"
+            customStyles={{
+              dateIcon: {
+                position: 'absolute',
+                left: 0,
+                top: 4,
+                marginLeft: 0
+              },
+              dateInput: {
+                marginLeft: 36
+              }
+            }}
+            onDateChange={(date) => {this.setState({birthday: date})}}
+            returnKeyType="go" />
 
           <Button
+            style={{top: 20}}
             onPress={this.submit.bind(this)}
             title={"Submit"}
           />
@@ -147,3 +174,13 @@ export default class Register extends Component {
     );
   }
 }
+
+
+//<FormLabel>Country</FormLabel>
+//<FormInput
+//  refInput={input => (this.countryInput = input)}
+//  value={country}
+//  onChangeText={country => this.setState({ country })}
+//  placeholder="Country"
+//  returnKeyType="next"
+///>

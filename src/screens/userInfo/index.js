@@ -8,7 +8,6 @@ const apiPort = "3000";
 
 const getUserInfoURL = "http://" + apiAddress + ":" + apiPort + "/api/v1/users/";
 const updateUserInfoURL = "http://" + apiAddress + ":" + apiPort + "/api/v1/users/";
-const updateUserMailURL = "http://" + apiAddress + ":" + apiPort + "/api/v1/users/changemail";
 
 export default class UserInfo extends Component {
   constructor(props) {
@@ -21,6 +20,8 @@ export default class UserInfo extends Component {
       firstName: "",
       lastName: "",
       mail: "",
+      // password: "",
+      // confirmPass: "",
       country: "",
       birthday: ""
     };
@@ -48,11 +49,7 @@ export default class UserInfo extends Component {
   }
 
   submit() {
-    this.submitInfo();
-  }
-
-  submitInfo() {
-    const { firstName, lastName, country, birthday } = this.state;
+    const { firstName, lastName, mail, password, confirmPass, country, birthday } = this.state;
 
     fetch(updateUserInfoURL, {
       method: "PUT",
@@ -62,8 +59,11 @@ export default class UserInfo extends Component {
         token: this.state.token
       },
       body: JSON.stringify({
-        firstName: firstName,
-        lastName: lastName,
+        firstname: firstName,
+        lastname: lastName,
+        mail: mail,
+        // password: password,
+        // confirmpass: confirmPass,
         country: country,
         birthday: birthday
       })
@@ -71,35 +71,9 @@ export default class UserInfo extends Component {
       .then((responseJSON) => {
         console.log(responseJSON);
         if (responseJSON.opcode == 200)
-          this.submitMail();
-        else {
-          UserInfo.popUp("Update informations error", responseJSON.message + ": " + responseJSON.field, "Try again");
-        }
-      }).catch((error) => {
-      console.log(error);
-    });
-  }
-
-  submitMail() {
-    const { mail } = this.state;
-
-    fetch(updateUserMailURL, {
-      method: "PUT",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        token: this.state.token
-      },
-      body: JSON.stringify({
-        mail: mail,
-      })
-    }).then((response) => response.json())
-      .then((responseJSON) => {
-        console.log(responseJSON);
-        if (responseJSON.opcode == 200)
           UserInfo.popUp("Update successful !", null, "OK");
         else {
-          UserInfo.popUp("Update mail error", responseJSON.message + ": " + responseJSON.field, "Try again");
+          UserInfo.popUp("Update error", responseJSON.message + ": " + responseJSON.field, "Try again");
         }
       }).catch((error) => {
       console.log(error);
@@ -118,7 +92,7 @@ export default class UserInfo extends Component {
   }
 
   render() {
-    const { firstName, lastName, mail,   country, birthday } = this.state;
+    const { firstName, lastName, mail, password, confirmPassword, country, birthday } = this.state;
 
     return (
       <ScrollView>

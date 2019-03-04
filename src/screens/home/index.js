@@ -20,54 +20,53 @@ import { Col, Grid, Row } from "react-native-easy-grid";
 
 const launchScreenLogo = require("../../../assets/logo_karty.png");
 
-const ip = "10.149.5.232";
-
 export default class Home extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      username: "paul.belloc@protonmail.com",
-      password: "test"
+        username: "paul.belloc@protonmail.com",
+        password: "test",
+        isLoggingIn: false,
+        data: "",
+        token: "",
     };
   }
 
-  handleToken(response, navigate) {
-    const values = JSON.parse(response);
-    if (values["opcode"] == 200 && values["message"] == "OK") {
-      navigate("UserInfo", { token: values["token"] });
+    GetToken(mail, password) {
+        var theUrl = global.ip + "/api/v1/auth/authenticate";
+        var params = "mail=" + mail + "&password=" + password;
+        var request = async () => {
+            var response = await fetch(theUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: params
+            });
+            var json = await response.json();
+            if (json.opcode == 200 && json.message == "OK") {
+                this.state.token = json.token;
+                const { navigate } = this.props.navigation;
+                navigate("ListLoad", {token : this.state.token});
+            }
+            else {
+                this.state.isLoggingIn = false;
+                alert(json.message);
+            }
+        }
+
+        request();
     }
-  }
 
-  GetToken(mail, password, callback) {
-    const { navigate } = this.props.navigation;
-    var theUrl = "http://" + ip + ":3000/api/v1/auth/authenticate";
-    var xmlHttp = new XMLHttpRequest();
-    var params = "mail=" + mail + "&password=" + password;
-    xmlHttp.open("POST", theUrl, true); // false for synchronous request
-    xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-    xmlHttp.onreadystatechange = function() {
-      if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-        callback(xmlHttp.responseText, navigate);
-      if (xmlHttp.readyState == 4 && xmlHttp.status != 200) {
-        Alert.alert(
-          "Login Error",
-          "Invalid credentials.",
-          [
-            { text: "OK", onPress: () => console.log("Login Error Invalid Credentials: OK pressed.") }
-          ],
-          { cancelable: false }
-        );
-      }
+    _userLogin = () => {
+        if (this.state.isLoggingIn) {
+            return;
+        }
+        this.state.isLoggingIn = true;
+        this.GetToken("riadmegh@gmail.com", "aze");
+        //this.GetToken(this.state.username, this.state.password);
     };
-
-    xmlHttp.send(params);
-  }
-
-  _userLogin = () => {
-    this.GetToken(this.state.username, this.state.password, this.handleToken);
-  };
 
   _register = () => {
     console.log("register clicked");

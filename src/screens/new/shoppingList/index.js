@@ -23,15 +23,58 @@ class ShoppingList extends Component {
     this.setState({ listViewData: newData });
   }
 
-    productList(data) {
-        const { navigate } = this.props.navigation;
-        navigate("ProductLoad", { token: this.state.token, data: data });
+  setproduct(response, listName, i)
+  {
+    if (this.state.data != "")
+      this.state.data += "--";
+    this.state.data += JSON.stringify(response);
+    if (i == 1)
+    {
+      const {navigate} = this.props.navigation;
+      navigate("ShoppingListShow", {token: this.state.token, listName: listName, products: this.state.data});
     }
+  }
+  
+  GetProduct(prods, listName)
+  {
+    var theUrl = "http://" + global.ip + ":3000/api/v1/product?id=";
+    var request = async () => {
+      for (var i = 0; i < prods.length; i++)
+      {
+        var response = await fetch(theUrl + prods[i], {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'token': this.state.token,
+          },
+        });
+        var json = await response.json();
+        if (json.opcode == 200 && json.message == "OK")
+        {
+//          alert(JSON.stringify(json))
+          this.setproduct(json, listName, prods.length - i);
+        }
+      }
+    }
+  
+    request();
+  }
+
+  getListProduct(data)
+  {
+    this.state.data = [];
+//    this.props.navigation.navigate("ShoppingListShow", {name: data.name, products: data.products});
+    if (this.state.token != "")
+    {
+        var prods = data.products.toString().split(",");
+        this.GetProduct(prods, data.name);
+    }
+  }
 
   addList()
   {
-      const { navigate } = this.props.navigation;
-      navigate("AddList", { token: this.state.token });
+    const {navigate} = this.props.navigation;
+    navigate("AddList", {token: this.state.token});
   }
 
   render() {
@@ -43,7 +86,7 @@ class ShoppingList extends Component {
       var list = navigation.getParam('list', 'NO-LIST').split("--");
       for (i = 0; i < list.length; ++i)
       {
-          datas.push(JSON.parse(list[i]));
+        datas.push(JSON.parse(list[i]));
       }
       this.state.listViewData = datas;
     }
@@ -77,7 +120,7 @@ class ShoppingList extends Component {
           <List style={{marginLeft: 20}}
             dataSource={this.ds.cloneWithRows(this.state.listViewData)}
             renderRow={data =>
-              <ListItem thumbnail onPress={() => this.productList(data)} >
+              <ListItem thumbnail onPress={() => this.getListProduct(data)} >
                 <Left>
                   <Text> {data.name} </Text>
                 </Left>
