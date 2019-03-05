@@ -74,6 +74,11 @@ export default class Home extends Component {
     navigate("Register");
   };
 
+  _forgotPassword = () => {
+    const { navigate } = this.props.navigation;
+    navigate("ForgotPassword");
+  };
+
   render() {
     return (
       <Grid style={{ backgroundColor: "red" }}>
@@ -81,9 +86,7 @@ export default class Home extends Component {
         <Row size={6}>
           <Col size={1}></Col>
           <Col size={4}>
-            <Image style={styles.logo} source={launchScreenLogo}
-                   resizeMode="contain"
-                   style={{ flex: 1, height: undefined, width: undefined }}/>
+            <Image style={{ flex: 1, height: undefined, width: undefined }} source={launchScreenLogo} resizeMode="contain" />
           </Col>
           <Col size={1}></Col>
         </Row>
@@ -127,7 +130,7 @@ export default class Home extends Component {
                       </Button>
                     </Left>
                     <Right>
-                      <Button onPress={this._register} style={styles.secondaryButton}>
+                      <Button onPress={this._forgotPassword} style={styles.secondaryButton}>
                         <Text style={styles.actionText}>Forgot !</Text>
                       </Button>
                     </Right>
