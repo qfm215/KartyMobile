@@ -1,23 +1,20 @@
 import React, { Component } from "react";
-import { Alert, KeyboardAvoidingView, ScrollView } from "react-native";
+import { KeyboardAvoidingView, ScrollView } from "react-native";
 
 import { FormLabel, FormInput, Text, Button } from "react-native-elements";
-
-const apiAddress = "10.149.5.232";
-const apiPort = "3000";
-
-const getUserInfoURL = "http://" + apiAddress + ":" + apiPort + "/api/v1/users/";
-const updateUserInfoURL = "http://" + apiAddress + ":" + apiPort + "/api/v1/users/";
-const updateUserMailURL = "http://" + apiAddress + ":" + apiPort + "/api/v1/users/changemail";
+import {
+  ENDPOINT_GET_USER_INFO,
+  ENDPOINT_UPDATE_USER_INFO,
+  ENDPOINT_UPDATE_USER_MAIL,
+  makeAPIRequest
+} from "../../app/services/apiService";
+import { simpleAlert } from "../../app/services/alertService";
 
 export default class UserInfo extends Component {
   constructor(props) {
     super(props);
-    const { navigation } = this.props;
-    const token = navigation.getParam("token");
 
     this.state = {
-      token: token,
       firstName: "",
       lastName: "",
       mail: "",
@@ -25,24 +22,22 @@ export default class UserInfo extends Component {
       birthday: ""
     };
 
-    this.getUserInfo(token).then((userInfo) => {
-      this.setState(userInfo);
+    this.getUserInfo().then((userInfo) => {
+      if (userInfo) {
+        this.setState(userInfo);
+      }
     });
   }
 
-  getUserInfo(token) {
-    return fetch(getUserInfoURL, {
-      method: "GET",
-      headers: {
-        token: token
-      }
-    }).then((response) => response.json())
+  getUserInfo() {
+    return makeAPIRequest(ENDPOINT_GET_USER_INFO)
       .then((responseJson) => {
-        console.debug(responseJson);
+        console.log(responseJson);
         return responseJson;
       })
       .catch((error) => {
         console.error(error);
+        return null;
       });
   }
 
@@ -54,75 +49,50 @@ export default class UserInfo extends Component {
     const { firstName, lastName, country, birthday, mail } = this.state;
 
     if (!(firstName && lastName && country && birthday && mail)) {
-      UserInfo.popUp("Error", "All fields must be filled.", "OK");
+      simpleAlert("Error", "All fields must be filled.", "OK");
       return;
     }
 
-    fetch(updateUserInfoURL, {
-      method: "PUT",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        token: this.state.token
-      },
-      body: JSON.stringify({
-        firstName: firstName,
-        lastName: lastName,
-        country: country,
-        birthday: birthday
-      })
-    }).then((response) => response.json())
+    const body = JSON.stringify({
+      firstName: firstName,
+      lastName: lastName,
+      country: country,
+      birthday: birthday
+    });
+
+    makeAPIRequest(ENDPOINT_UPDATE_USER_INFO, body)
       .then((responseJSON) => {
-        console.log(responseJSON);
-        if (responseJSON.opcode == 200)
+        if (responseJSON["opcode"] === 200)
           this.submitMail(mail);
         else {
-          UserInfo.popUp("Update informations error", responseJSON.message + ": " + responseJSON.field, "Try again");
+          simpleAlert("Update informations error", responseJSON.message + ": " + responseJSON.field, "Try again");
         }
       }).catch((error) => {
-      console.log(error);
+      console.error(error);
     });
   }
 
   submitMail(mail) {
-    fetch(updateUserMailURL, {
-      method: "PUT",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        token: this.state.token
-      },
-      body: JSON.stringify({
-        mail: mail,
-      })
-    }).then((response) => response.json())
+    const body = JSON.stringify({
+      mail: mail
+    });
+
+    makeAPIRequest(ENDPOINT_UPDATE_USER_MAIL, body)
       .then((responseJSON) => {
-        console.log(responseJSON);
-        if (responseJSON.opcode == 200) {
-          UserInfo.popUp("Update successful !", null, "OK");
+        if (responseJSON["opcode"] === 200) {
+          simpleAlert("Update successful !", null, "OK");
           this.props.navigation.goBack();
         }
         else {
-          UserInfo.popUp("Update mail error", responseJSON.message + ": " + responseJSON.field, "Try again");
+          simpleAlert("Update mail error", responseJSON.message + ": " + responseJSON.field, "Try again");
         }
       }).catch((error) => {
-      console.log(error);
+      console.error(error);
     });
   }
 
-  static popUp(title, text, buttonText) {
-    Alert.alert(
-      title,
-      text,
-      [
-        { text: buttonText }
-      ],
-      { cancelable: false }
-    );
-  }
-
   render() {
-    const { firstName, lastName, mail,   country, birthday } = this.state;
+    const { firstName, lastName, mail, country, birthday } = this.state;
 
     return (
       <ScrollView>

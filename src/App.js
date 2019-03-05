@@ -9,6 +9,7 @@ import MainMenu from './screens/mainMenu/'
 import UserBudgets from './screens/userBudgets';
 import CreateUserBudget from './screens/createUserBudget';
 import ForgotPassword from './screens/forgotPassword';
+import ChangePassword from './screens/changePassword';
 
 const App = StackNavigator(
   {
@@ -21,6 +22,7 @@ const App = StackNavigator(
     CreateUserBudget: {screen: CreateUserBudget },
     MainMenu: { screen: MainMenu },
     ForgotPassword: { screen: ForgotPassword },
+    ChangePassword: { screen: ChangePassword },
   },
   {
     initialRouteName: "Home",

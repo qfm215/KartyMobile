@@ -4,35 +4,25 @@ import { Col, Grid, Row } from "react-native-easy-grid";
 import { FlatList } from "react-native";
 
 import styles from "../home/styles";
-
-const apiAddress = "10.149.5.232";
-const apiPort = "3000";
-const getUserBudgetsURL = "http://" + apiAddress + ":" + apiPort + "/api/v1/budgets/user/";
-
+import { ENDPOINT_GET_USER_BUDGETS, makeAPIRequest } from "../../app/services/apiService";
 
 export default class UserBudgets extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      token: this.props.navigation.getParam("token")
-    };
 
+    this.state = {
+      budgets: []
+    };
     this.refresh();
   }
 
   _createUserBudget = () => {
-    this.props.navigation.navigate("CreateUserBudget", { token: this.state.token, onBack: () => this.refresh() });
+    this.props.navigation.navigate("CreateUserBudget", { onBack: () => this.refresh() });
   };
 
-  getUserBudgets(token) {
-    return fetch(getUserBudgetsURL, {
-      method: "GET",
-      headers: {
-        token: token
-      }
-    }).then((response) => response.json())
+  getUserBudgets() {
+    return makeAPIRequest(ENDPOINT_GET_USER_BUDGETS)
       .then((responseJson) => {
-        console.debug(responseJson);
         return responseJson;
       })
       .catch((error) => {
@@ -41,7 +31,7 @@ export default class UserBudgets extends Component {
   }
 
   refresh() {
-    this.getUserBudgets(this.state.token).then((getUserBudgetsResponse) => {
+    this.getUserBudgets().then((getUserBudgetsResponse) => {
       this.setState({ budgets: getUserBudgetsResponse["budgets"] });
     });
   }

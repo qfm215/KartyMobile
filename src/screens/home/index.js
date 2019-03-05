@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import { KeyboardAvoidingView, Image, Alert } from "react-native";
+import { KeyboardAvoidingView, Image } from "react-native";
 import {
   Button,
   H1,
@@ -17,10 +17,11 @@ import {
 
 import styles from "./styles.js";
 import { Col, Grid, Row } from "react-native-easy-grid";
+import { ENDPOINT_AUTHENTICATE, makeAPIRequest } from "../../app/services/apiService";
+import { onSignIn } from "../../app/services/authService";
+import { simpleAlert } from "../../app/services/alertService";
 
 const launchScreenLogo = require("../../../assets/logo_karty.png");
-
-const ip = "10.149.5.232";
 
 export default class Home extends Component {
   constructor(props) {
@@ -32,51 +33,32 @@ export default class Home extends Component {
     };
   }
 
-  handleToken(response, navigate, mail) {
-    const values = JSON.parse(response);
-    if (values["opcode"] == 200 && values["message"] == "OK") {
-      navigate("MainMenu", { token: values["token"], username: mail });
-    }
-  }
+  _userLogin = async () => {
+    const body = JSON.stringify({
+      mail: this.state.username,
+      password: this.state.password
+    });
 
-  GetToken(mail, password, callback) {
-    const { navigate } = this.props.navigation;
-    var theUrl = "http://" + ip + ":3000/api/v1/auth/authenticate";
-    var xmlHttp = new XMLHttpRequest();
-    var params = "mail=" + mail + "&password=" + password;
-    xmlHttp.open("POST", theUrl, true); // false for synchronous request
-    xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-    xmlHttp.onreadystatechange = function() {
-      if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-        callback(xmlHttp.responseText, navigate, mail);
-      if (xmlHttp.readyState == 4 && xmlHttp.status != 200) {
-        Alert.alert(
-          "Login Error",
-          "Invalid credentials.",
-          [
-            { text: "OK", onPress: () => console.log("Login Error Invalid Credentials: OK pressed.") }
-          ],
-          { cancelable: false }
-        );
+    makeAPIRequest(ENDPOINT_AUTHENTICATE, body).then((responseJson) => {
+      if (responseJson["status"] === "200") {
+        onSignIn(responseJson["token"], this.state.username).then(() => {
+          this.props.navigation.navigate("MainMenu");
+        });
+      } else if (responseJson["status"] === "400") {
+        simpleAlert("Login error", "Wrong credentials.", "OK");
       }
-    };
-
-    xmlHttp.send(params);
-  }
-
-  _userLogin = () => {
-    this.GetToken(this.state.username, this.state.password, this.handleToken);
+    }).catch((error) => {
+      console.error(error);
+      simpleAlert("Login error", "Unexpected error. Check service availability.", "OK");
+    });
   };
 
   _register = () => {
-    const { navigate } = this.props.navigation;
-    navigate("Register");
+    this.props.navigation.navigate("Register");
   };
 
   _forgotPassword = () => {
-    const { navigate } = this.props.navigation;
-    navigate("ForgotPassword");
+    this.props.navigation.navigate("ForgotPassword");
   };
 
   render() {
@@ -86,7 +68,8 @@ export default class Home extends Component {
         <Row size={6}>
           <Col size={1}></Col>
           <Col size={4}>
-            <Image style={{ flex: 1, height: undefined, width: undefined }} source={launchScreenLogo} resizeMode="contain" />
+            <Image style={{ flex: 1, height: undefined, width: undefined }} source={launchScreenLogo}
+                   resizeMode="contain"/>
           </Col>
           <Col size={1}></Col>
         </Row>

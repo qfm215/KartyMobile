@@ -1,12 +1,9 @@
 import React, { Component } from "react";
-import { Alert, KeyboardAvoidingView, ScrollView } from "react-native";
+import { KeyboardAvoidingView, ScrollView } from "react-native";
 
 import { FormLabel, FormInput, Text, Button } from "react-native-elements";
-
-const apiAddress = "10.149.5.232";
-const apiPort = "3000";
-
-const createUserUrl = "http://" + apiAddress + ":" + apiPort + "/api/v1/users/";
+import { ENDPOINT_REGISTER, makeAPIRequest } from "../../app/services/apiService";
+import { simpleAlert } from "../../app/services/alertService";
 
 export default class Register extends Component {
   constructor(props) {
@@ -25,49 +22,37 @@ export default class Register extends Component {
 
   submit() {
     const { firstName, lastName, email, password, confirmPass, country, birthday } = this.state;
-    console.log(firstName, lastName, email, password, confirmPass, country, birthday);
 
-    fetch(createUserUrl, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        firstname: firstName,
-        lastname: lastName,
-        mail: email,
-        password: password,
-        confirmpass: confirmPass,
-        country: country,
-        birthday: birthday
-      })
-    }).then((response) => response.json())
+    const body = JSON.stringify({
+      firstname: firstName,
+      lastname: lastName,
+      mail: email,
+      password: password,
+      confirmpass: confirmPass,
+      country: country,
+      birthday: birthday
+    });
+
+    makeAPIRequest(ENDPOINT_REGISTER, body)
       .then((responseJSON) => {
-        console.log(responseJSON);
-        if (responseJSON.opcode == 200)
-          Register.popUp("Registration successful !", "Check your emails to validate.", "OK");
+        if (responseJSON["opcode"] === 200) {
+          simpleAlert("Registration successful !", "Check your emails to validate.", "OK");
+          this.props.navigation.goBack();
+        }
         else {
-          Register.popUp("Registration error", responseJSON.message + ": " + responseJSON.field, "Try again");
+          if (responseJSON["message"] === "Missing field") {
+            simpleAlert("Registration error", responseJSON["message"] + " : " + responseJSON["field"], "Try again");
+          } else {
+            simpleAlert("Registration error", responseJSON["message"], "Try again");
+          }
         }
       }).catch((error) => {
-      console.log(error);
+      console.error(error);
     });
   }
 
-  static popUp(title, text, buttonText) {
-    Alert.alert(
-      title,
-      text,
-      [
-        { text: buttonText }
-      ],
-      { cancelable: false }
-    );
-  }
-
   render() {
-    const { firstName, lastName, email, password, confirmPassword, country, birthday } = this.state;
+    const { firstName, lastName, email, password, confirmPass, country, birthday } = this.state;
     return (
       <ScrollView>
         <KeyboardAvoidingView behavior={"padding"} enabled>
@@ -113,8 +98,8 @@ export default class Register extends Component {
           <FormLabel>Confirm Password</FormLabel>
           <FormInput
             refInput={input => (this.confirmPasswordInput = input)}
-            value={confirmPassword}
-            onChangeText={confirmPassword => this.setState({ confirmPassword })}
+            value={confirmPass}
+            onChangeText={confirmPass => this.setState({ confirmPass })}
             placeholder="Confirm Password"
             returnKeyType="next"
             secureTextEntry
