@@ -154,8 +154,8 @@ class ShoppingListShow extends Component {
     products = navigation.getParam('products', 'NO-LIST');
     this.getListProduct(token, products);
     return (
-      <Container style={{backgroundColor: "#FFF"}}>
-        <Header searchBar rounded style={{backgroundColor: "red"}}>
+      <Container>
+        <Header searchBar rounded>
           <Left>
             <Button transparent onPress={() => this.props.navigation.goBack()}>
               <Icon name="arrow-back" />
@@ -205,7 +205,7 @@ class ShoppingListShow extends Component {
             rightOpenValue={-75}
           />
         </Content>
-        <Button rounded style={{ backgroundColor: "#DD5144", position: "absolute", bottom: 0, right: 0, margin: 20}}>
+        <Button rounded style={{ position: "absolute", bottom: 0, right: 0, margin: 20}}>
           <IconNB name="md-add" />
         </Button>
       </Container>

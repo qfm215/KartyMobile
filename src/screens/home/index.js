@@ -3,10 +3,8 @@ import React, { Component } from "react";
 import {
   Button,
   Text,
-  Right,
   Input,
   Content,
-  Left,
   Body,
   Header, Title, Container, Footer, FooterTab
 } from "native-base";
@@ -57,11 +55,9 @@ export default class Home extends Component {
     return (
       <Container>
         <Header>
-          <Left>
-            <Title>Register</Title>
-          </Left>
-          <Body/>
-          <Right/>
+          <Body>
+            <Title>Karty - Home</Title>
+          </Body>
         </Header>
 
         <Content>

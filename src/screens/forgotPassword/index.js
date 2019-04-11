@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 import { ENDPOINT_FORGOT_PASSWORD, makeAPIRequest } from "../../app/services/apiService";
 import { simpleAlert } from "../../app/services/alertService";
-import { Body, Container, Content, Footer, FooterTab, Header, Left, Right, Title, Text, Button, Input } from "native-base";
+import { Body, Container, Content, Footer, FooterTab, Header, Title, Text, Button, Input } from "native-base";
 
 export default class ForgotPassword extends Component {
   constructor(props) {
@@ -48,11 +48,9 @@ export default class ForgotPassword extends Component {
     return (
       <Container>
         <Header>
-          <Left>
-            <Title>Register</Title>
-          </Left>
-          <Body/>
-          <Right/>
+          <Body>
+            <Title>Forgot password</Title>
+          </Body>
         </Header>
 
         <Content>

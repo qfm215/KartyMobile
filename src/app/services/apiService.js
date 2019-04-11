@@ -4,7 +4,7 @@ import ApiEndpoint from "../classes/ApiEndpoint";
 import { getToken } from "./authService";
 
 const API_ADDRESS_PREFIX = "http://";
-const API_ADDRESS = "10.149.5.232";
+const API_ADDRESS = "10.149.2.118";
 const API_ADDRESS_PORT = ":3000";
 const API_ADDRESS_SUFFIX = "/api/v1";
 

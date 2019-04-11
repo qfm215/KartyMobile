@@ -1,72 +1,96 @@
-import React, { Component } from "react";
-import { H2, Button, Text } from "native-base";
-import { Col, Grid, Row } from "react-native-easy-grid";
-import { FlatList } from "react-native";
+import React, {Component} from "react";
+import {
+    Button,
+    Text,
+    Header,
+    Left,
+    Body,
+    Title,
+    Right,
+    Content,
+    Container,
+    Footer,
+    FooterTab,
+    ListItem, Icon
+} from "native-base";
+import {FlatList} from "react-native";
 
-import styles from "../home/styles";
-import { ENDPOINT_GET_USER_BUDGETS, makeAPIRequest } from "../../app/services/apiService";
+import {ENDPOINT_GET_USER_BUDGETS, makeAPIRequest} from "../../app/services/apiService";
 
 export default class UserBudgets extends Component {
-  constructor(props) {
-    super(props);
+    constructor(props) {
+        super(props);
 
-    this.state = {
-      budgets: []
+        this.state = {
+            budgets: []
+        };
+        this.refresh();
+    }
+
+    _createUserBudget = () => {
+        this.props.navigation.navigate("CreateUserBudget", {onBack: () => this.refresh()});
     };
-    this.refresh();
-  }
 
-  _createUserBudget = () => {
-    this.props.navigation.navigate("CreateUserBudget", { onBack: () => this.refresh() });
-  };
+    getUserBudgets() {
+        return makeAPIRequest(ENDPOINT_GET_USER_BUDGETS)
+            .then((responseJson) => {
+                return responseJson;
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
 
-  getUserBudgets() {
-    return makeAPIRequest(ENDPOINT_GET_USER_BUDGETS)
-      .then((responseJson) => {
-        return responseJson;
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }
+    refresh() {
+        this.getUserBudgets().then((getUserBudgetsResponse) => {
+            this.setState({budgets: getUserBudgetsResponse["budgets"]});
+        });
+    }
 
-  refresh() {
-    this.getUserBudgets().then((getUserBudgetsResponse) => {
-      this.setState({ budgets: getUserBudgetsResponse["budgets"] });
-    });
-  }
+    render() {
+        return (
+            <Container>
+                <Header>
+                    <Body>
+                        <Title>Your budgets</Title>
+                    </Body>
+                    <Right/>
+                </Header>
 
-  render() {
-    return (
-      <Grid style={{ backgroundColor: "red", alignItems: "center" }}>
-        <Row size={1} style={{ alignItems: "center" }}>
-          <Col Style={{}} size={1}></Col>
-          <H2>Budgets</H2>
-          <Col size={1}></Col>
-        </Row>
-        <Row size={10}>
-          <Col size={1}></Col>
-          <Col size={8} style={{ backgroundColor: "white" }}>
-            <Button onPress={this._createUserBudget} style={styles.secondaryButton}>
-              <Text style={styles.actionText}>Add new budget</Text>
-            </Button>
-            <FlatList
-              style={{ alignSelf: "stretch" }}
-              data={this.state.budgets}
-              renderItem={({ item }) =>
-                <Text style={{ paddingBottom: 20, textAlign: "center" }}>
-                  {item.name}{"\n"}
-                  {item.description}{"\n"}
-                  {item.total}{"€"}
-                </Text>
-              }
-              keyExtractor={(item, index) => index.toString()}
-            />
-          </Col>
-          <Col size={1}></Col>
-        </Row>
-        <Row size={1}></Row>
-      </Grid>
-    );
-  }
+                <Content>
+                    <FlatList
+                        style={{alignSelf: "stretch"}}
+                        data={this.state.budgets}
+                        renderItem={({item}) =>
+                            <ListItem icon>
+                                <Left>
+                                    <Icon active name="cash"/>
+                                </Left>
+                                <Body>
+                                    <Text>
+                                        {"Nom: "}{item.name}{"\n"}
+                                        {"Description: "}{item.description}{"\n"}
+                                    </Text>
+                                </Body>
+                                <Right>
+                                    <Text>
+                                        {"Valeur: "}{item.total}{"€"}
+                                    </Text>
+                                </Right>
+                            </ListItem>
+                        }
+                        keyExtractor={(item, index) => index.toString()}
+                    />
+                </Content>
+
+                <Footer>
+                    <FooterTab>
+                        <Button onPress={this._createUserBudget} full>
+                            <Text>Add a budget</Text>
+                        </Button>
+                    </FooterTab>
+                </Footer>
+            </Container>
+        );
+    }
 }
