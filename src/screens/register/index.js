@@ -1,9 +1,23 @@
 import React, { Component } from "react";
 import { KeyboardAvoidingView, ScrollView } from "react-native";
 
-import { FormLabel, FormInput, Text, Button } from "react-native-elements";
 import { ENDPOINT_REGISTER, makeAPIRequest } from "../../app/services/apiService";
 import { simpleAlert } from "../../app/services/alertService";
+import {
+  Container,
+  Header,
+  Title,
+  Content,
+  Footer,
+  FooterTab,
+  Button,
+  Left,
+  Right,
+  Body,
+  Icon,
+  Text,
+  Input,
+} from "native-base";
 
 export default class Register extends Component {
   constructor(props) {
@@ -54,81 +68,88 @@ export default class Register extends Component {
   render() {
     const { firstName, lastName, email, password, confirmPass, country, birthday } = this.state;
     return (
-      <ScrollView>
-        <KeyboardAvoidingView behavior={"padding"} enabled>
-          <Text>Register</Text>
+      <Container>
+        <Header>
+          <Left>
+            <Title>Register</Title>
+          </Left>
+          <Body/>
+          <Right/>
+        </Header>
+        <Content>
+          <ScrollView>
+            <KeyboardAvoidingView behavior={"padding"} enabled>
+              
+              <Input
+                refInput={input => (this.firstNameInput = input)}
+                value={firstName}
+                onChangeText={firstName => this.setState({ firstName })}
+                placeholder="First Name"
+                returnKeyType="next"
+              />
 
-          <FormLabel>First Name</FormLabel>
-          <FormInput
-            refInput={input => (this.firstNameInput = input)}
-            value={firstName}
-            onChangeText={firstName => this.setState({ firstName })}
-            placeholder="First Name"
-            returnKeyType="next"
-          />
+              <Input
+                refInput={input => (this.lastNameInput = input)}
+                value={lastName}
+                onChangeText={lastName => this.setState({ lastName })}
+                placeholder="Last Name"
+                returnKeyType="next"
+              />
 
-          <FormLabel>Last Name</FormLabel>
-          <FormInput
-            refInput={input => (this.lastNameInput = input)}
-            value={lastName}
-            onChangeText={lastName => this.setState({ lastName })}
-            placeholder="Last Name"
-            returnKeyType="next"
-          />
+              <Input
+                refInput={input => (this.emailInput = input)}
+                value={email}
+                onChangeText={email => this.setState({ email })}
+                placeholder="Email"
+                returnKeyType="next"
+              />
 
-          <FormLabel>Email</FormLabel>
-          <FormInput
-            refInput={input => (this.emailInput = input)}
-            value={email}
-            onChangeText={email => this.setState({ email })}
-            placeholder="Email"
-            returnKeyType="next"
-          />
+              <Input
+                refInput={input => (this.passwordInput = input)}
+                value={password}
+                onChangeText={password => this.setState({ password })}
+                placeholder="Password"
+                returnKeyType="next"
+                secureTextEntry
+              />
 
-          <FormLabel>Password</FormLabel>
-          <FormInput
-            refInput={input => (this.passwordInput = input)}
-            value={password}
-            onChangeText={password => this.setState({ password })}
-            placeholder="Password"
-            returnKeyType="next"
-            secureTextEntry
-          />
+              <Input
+                refInput={input => (this.confirmPasswordInput = input)}
+                value={confirmPass}
+                onChangeText={confirmPass => this.setState({ confirmPass })}
+                placeholder="Confirm Password"
+                returnKeyType="next"
+                secureTextEntry
+              />
 
-          <FormLabel>Confirm Password</FormLabel>
-          <FormInput
-            refInput={input => (this.confirmPasswordInput = input)}
-            value={confirmPass}
-            onChangeText={confirmPass => this.setState({ confirmPass })}
-            placeholder="Confirm Password"
-            returnKeyType="next"
-            secureTextEntry
-          />
+              <Input
+                refInput={input => (this.countryInput = input)}
+                value={country}
+                onChangeText={country => this.setState({ country })}
+                placeholder="Country"
+                returnKeyType="next"
+              />
 
-          <FormLabel>Country</FormLabel>
-          <FormInput
-            refInput={input => (this.countryInput = input)}
-            value={country}
-            onChangeText={country => this.setState({ country })}
-            placeholder="Country"
-            returnKeyType="next"
-          />
+              <Input
+                refInput={input => (this.birthdayInput = input)}
+                value={birthday}
+                onChangeText={birthday => this.setState({ birthday })}
+                placeholder="Birthday (yyyy-mm-dd)"
+                returnKeyType="go"
+              />
 
-          <FormLabel>Birthday (yyyy-mm-dd)</FormLabel>
-          <FormInput
-            refInput={input => (this.birthdayInput = input)}
-            value={birthday}
-            onChangeText={birthday => this.setState({ birthday })}
-            placeholder="Birthday (yyyy-mm-dd)"
-            returnKeyType="go"
-          />
+            </KeyboardAvoidingView>
+          </ScrollView>
+        </Content>
 
-          <Button
-            onPress={this.submit.bind(this)}
-            title={"Submit"}
-          />
-        </KeyboardAvoidingView>
-      </ScrollView>
+        <Footer>
+          <FooterTab>
+            <Button onPress={this.submit.bind(this)} full>
+              <Text>Submit registration</Text>
+            </Button>
+          </FooterTab>
+        </Footer>
+      </Container>
     );
   }
 }

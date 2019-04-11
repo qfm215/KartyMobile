@@ -1,9 +1,22 @@
 import React, { Component } from "react";
-import { H2, Button, Text } from "native-base";
-import { Col, Grid, Row } from "react-native-easy-grid";
+import {
+  Button,
+  Text,
+  Header,
+  Left,
+  Title,
+  Body,
+  Right,
+  Container,
+  List,
+  ListItem,
+  Content,
+  Footer,
+  FooterTab,
+  Icon
+} from "native-base";
 import { NavigationActions } from "react-navigation";
 
-import styles from "../home/styles";
 import { getMail, onSignOut } from "../../app/services/authService";
 
 export default class MainMenu extends Component {
@@ -11,7 +24,7 @@ export default class MainMenu extends Component {
     super(props);
 
     this.state = {
-      mail: "",
+      mail: ""
     };
 
     getMail().then((mail) => this.setState({
@@ -49,47 +62,69 @@ export default class MainMenu extends Component {
 
   render() {
     return (
-      <Grid style={{ backgroundColor: "red", alignItems: "center" }}>
-        <Row size={1} style={{ alignItems: "center" }}>
-          <Col Style={{}} size={1}></Col>
-          <H2>Welcome {this.state.mail}</H2>
-          <Col size={1}></Col>
-        </Row>
-        <Row size={10}>
-          <Col size={1}></Col>
-          <Col size={8} style={{ backgroundColor: "white", alignItems: "center" }}>
-            <Row size={1}></Row>
-            <Row size={2}>
-              <Button onPress={this._userInfo} style={styles.secondaryButton}>
-                <Text style={styles.actionText}>User informations</Text>
+      <Container>
+        <Header>
+          <Left/>
+          <Body style={{ flex: 3, flexDirection: "row", justifyContent: "center" }}>
+          <Title>Welcome {this.state.mail}</Title>
+          </Body>
+          <Right/>
+        </Header>
+
+        <Content>
+          <ListItem onPress={this._userInfo} icon>
+            <Left>
+              <Button>
+                <Icon active name="information"/>
               </Button>
-            </Row>
-            <Row size={2}>
-              <Button onPress={this._shoppingList} style={styles.secondaryButton}>
-                <Text style={styles.actionText}>Shopping List</Text>
+            </Left>
+            <Body>
+            <Text>User informations</Text>
+            </Body>
+          </ListItem>
+
+          <ListItem onPress={this._shoppingList} icon>
+            <Left>
+              <Button>
+                <Icon active name="shopping-cart" type="Entypo"/>
               </Button>
-            </Row>
-            <Row size={2}>
-              <Button onPress={this._userBudgets} style={styles.secondaryButton}>
-                <Text style={styles.actionText}>Budgets</Text>
+            </Left>
+            <Body>
+            <Text>Shopping list</Text>
+            </Body>
+          </ListItem>
+
+          <ListItem onPress={this._userBudgets} icon>
+            <Left>
+              <Button>
+                <Icon active name="dollar" type="FontAwesome"/>
               </Button>
-            </Row>
-            <Row size={2}>
-              <Button onPress={this._changePassword} style={styles.secondaryButton}>
-                <Text style={styles.actionText}>Change password</Text>
+            </Left>
+            <Body>
+            <Text>Manage budgets</Text>
+            </Body>
+          </ListItem>
+
+          <ListItem onPress={this._changePassword} icon>
+            <Left>
+              <Button>
+                <Icon active name="security" type="MaterialCommunityIcons"/>
               </Button>
-            </Row>
-            <Row size={2}>
-              <Button onPress={this._disconnect} style={styles.secondaryButton}>
-                <Text style={styles.actionText}>Disconnect</Text>
-              </Button>
-            </Row>
-            <Row size={8}></Row>
-          </Col>
-          <Col size={1}></Col>
-        </Row>
-        <Row size={1}></Row>
-      </Grid>
+            </Left>
+            <Body>
+            <Text>Change password</Text>
+            </Body>
+          </ListItem>
+        </Content>
+
+        <Footer>
+          <FooterTab>
+            <Button onPress={this._disconnect} full>
+              <Text>Disconnect</Text>
+            </Button>
+          </FooterTab>
+        </Footer>
+      </Container>
     );
   }
 }

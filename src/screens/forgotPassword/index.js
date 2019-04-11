@@ -1,10 +1,8 @@
 import React, { Component } from "react";
-import { Alert, KeyboardAvoidingView, ScrollView } from "react-native";
 
-import { FormLabel, FormInput, Text, Button } from "react-native-elements";
-import { ENDPOINT_FORGOT_PASSWORD, getRouteForgotPassword, makeAPIRequest } from "../../app/services/apiService";
-import { getToken } from "../../app/services/authService";
+import { ENDPOINT_FORGOT_PASSWORD, makeAPIRequest } from "../../app/services/apiService";
 import { simpleAlert } from "../../app/services/alertService";
+import { Body, Container, Content, Footer, FooterTab, Header, Left, Right, Title, Text, Button, Input } from "native-base";
 
 export default class ForgotPassword extends Component {
   constructor(props) {
@@ -48,24 +46,32 @@ export default class ForgotPassword extends Component {
     const { forgotPasswordMail } = this.state;
 
     return (
-      <ScrollView>
-        <KeyboardAvoidingView behavior={"padding"} enabled>
-          <Text>Password reset</Text>
+      <Container>
+        <Header>
+          <Left>
+            <Title>Register</Title>
+          </Left>
+          <Body/>
+          <Right/>
+        </Header>
 
-          <FormLabel>mail</FormLabel>
-          <FormInput
+        <Content>
+          <Input
             value={forgotPasswordMail}
             onChangeText={forgotPasswordMail => this.setState({ forgotPasswordMail })}
             placeholder="mail"
             returnKeyType="next"
           />
+        </Content>
 
-          <Button
-            onPress={this.submit.bind(this)}
-            title={"Submit"}
-          />
-        </KeyboardAvoidingView>
-      </ScrollView>
+        <Footer>
+          <FooterTab>
+            <Button onPress={this.submit.bind(this)} full>
+              <Text>Send password reset email</Text>
+            </Button>
+          </FooterTab>
+        </Footer>
+      </Container>
     );
   }
 }

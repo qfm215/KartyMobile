@@ -26,8 +26,11 @@ const App = StackNavigator(
   },
   {
     initialRouteName: "Home",
-    headerMode: "none"
-  }
+    headerMode: "none",
+    cardStyle: {
+      backgroundColor: "#ffffff"
+    },
+  },
 );
 
 export default App;

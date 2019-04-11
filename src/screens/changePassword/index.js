@@ -31,7 +31,7 @@ export default class ChangePassword extends Component {
     const body = JSON.stringify({
       mail: mail,
       password: password,
-      confirmpass: confirmpass
+      confirmpass: password
     });
 
     makeAPIRequest(ENDPOINT_UPDATE_PASSWORD, body)

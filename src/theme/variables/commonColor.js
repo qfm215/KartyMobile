@@ -166,7 +166,7 @@ export default {
     return this.textColor;
   },
   get inputColorPlaceholder() {
-    return "#575757";
+    return "#000000";
   },
 
   // Line Height
@@ -182,7 +182,7 @@ export default {
   listDividerBg: "#f4f4f4",
   listBtnUnderlayColor: "#DDD",
   listItemPadding: platform === "ios" ? 10 : 12,
-  listNoteColor: "#808080",
+  listNoteColor: "#000000",
   listNoteSize: 13,
 
   // Progress Bar
@@ -239,7 +239,7 @@ export default {
   borderRadiusBase: platform === "ios" ? 5 : 2,
   borderWidth: 1 / PixelRatio.getPixelSizeForLayoutSize(1),
   contentPadding: 10,
-  dropdownLinkColor: "#414142",
+  dropdownLinkColor: "#000000",
   inputLineHeight: 24,
   deviceWidth,
   deviceHeight,
